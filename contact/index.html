@@ -10,8 +10,27 @@
         <div><a href="index.html">Home</a></div>
         <div><a href="projects/index.html">Projects</a></div>
         <div><a href="contact/index.html">Contact</a></div>
-        <div><a href="https://github.com/ikumar55">Github</a></div>
+        <div><a href="https://github.com/ikumar55" target="_blank">Github</a></div>
     </nav>
     <h1>Contact</h1>
+    <form
+        action="mailto:idhantkumar1@gmail.com"
+        method="POST"
+        enctype="text/plain"
+    >
+        <label>
+            Email
+            <input name="email" type="email">
+        </label>
+        <label>
+            Subject
+            <input name="subject">
+        </label>
+        <label>
+            Body
+            <textarea name="body"></textarea>
+        </label>
+        <button>Submit</button>
+    </form>
 </body>
 </html>
