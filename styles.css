@@ -3,4 +3,14 @@ body {
          and use the OS’s UI font as the website font
        */
     font: 100%/1.5 system-ui;
-  }
+}
+
+nav {
+    height: 10vh;
+    background-color: lightblue;
+}
+
+nav div {
+    padding: 10px;
+    border-bottom: 2px solid black;
+}
