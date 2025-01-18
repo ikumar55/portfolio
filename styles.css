@@ -2,6 +2,8 @@ body {
     /* Set line height to 1.5 times the font size
          and use the OS’s UI font as the website font
        */
+    max-width: 80ch;
+    margin: 0 auto;
     font: 100%/1.5 system-ui;
 }
 
