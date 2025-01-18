@@ -20,15 +20,16 @@ html {
 
 
 nav {
-    display: flex; /* Enable Flexbox */
-    border-bottom: 1px solid oklch(80% 3% 200); /* Subtle border */
-    margin-bottom: 1em; /* Add space below the nav */
+    display: flex; /* Use Flexbox for horizontal layout */
+    justify-content: space-around; /* Space links evenly */
+    align-items: center; /* Center links vertically */
+    border-bottom: 1px solid oklch(80% 3% 200); /* Subtle border below the nav */
+    margin-bottom: 1em; /* Space below the nav */
+    padding: 0.5em 0; /* Add some padding around the nav bar */
 }
 
 nav ul {
-    list-style: none; /* Remove bullet points */
-    margin: 0; /* Remove default margin */
-    padding: 0; /* Remove default padding */
+    display: contents; /* Remove <ul> and <li> styling but keep structure */
 }
 
 nav li {
@@ -36,18 +37,18 @@ nav li {
 }
 
 nav a {
-    flex: 1; /* Equal space for each link */
     text-decoration: none; /* Remove underline */
-    color: inherit; /* Inherit text color */
-    text-align: center; /* Center text */
-    padding: 0.5em; /* Add spacing around links */
+    color: inherit; /* Inherit color from parent */
+    text-align: center; /* Center the text */
+    padding: 0.5em 1em; /* Add spacing around each link */
+    font-weight: bold; /* Make links bold */
 }
 
 nav a:hover {
-    border-bottom: 0.4em solid var(--color-accent); /* Accent border on hover */
+    border-bottom: 0.3em solid var(--color-accent); /* Highlight border on hover */
 }
 
 .current {
-    border-bottom: 0.4em solid oklch(80% 3% 200); /* Highlight the current page link */
-    padding-bottom: 0.1em; /* Adjust padding */
+    border-bottom: 0.3em solid var(--color-accent); /* Highlight the current page */
+    padding-bottom: 0.2em; /* Adjust padding to balance height */
 }
