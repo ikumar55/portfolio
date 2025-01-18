@@ -5,6 +5,7 @@ body {
     max-width: 80ch;
     margin-inline: auto;
     margin-block: 0;
+    padding: 0 1rem; /* Add padding to the left and right */
     font: 100%/1.5 system-ui;
 }
 
