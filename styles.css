@@ -9,11 +9,39 @@ body {
     font: 100%/1.5 system-ui;
 }
 
-nav {
-    background-color: lightblue;
+
+:root {
+    --color-accent: oklch(65% 50% 0); /* Define an accent color */
 }
 
-nav div {
-    padding: 10px;
-    border-bottom: 2px solid black;
+html {
+    accent-color: var(--color-accent);
+}
+
+
+nav {
+    display: flex; /* Enable Flexbox */
+    border-bottom: 1px solid oklch(80% 3% 200); /* Subtle border */
+    margin-bottom: 1em; /* Add space below the nav */
+}
+
+nav ul {
+    display: contents; /* Prevent <ul> and <li> from interfering */
+}
+
+nav a {
+    flex: 1; /* Equal space for each link */
+    text-decoration: none; /* Remove underline */
+    color: inherit; /* Inherit text color */
+    text-align: center; /* Center text */
+    padding: 0.5em; /* Add spacing around links */
+}
+
+nav a:hover {
+    border-bottom: 0.4em solid var(--color-accent); /* Accent border on hover */
+}
+
+.current {
+    border-bottom: 0.4em solid oklch(80% 3% 200); /* Highlight the current page link */
+    padding-bottom: 0.1em; /* Adjust padding */
 }
