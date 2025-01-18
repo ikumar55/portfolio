@@ -26,7 +26,13 @@ nav {
 }
 
 nav ul {
-    display: contents; /* Prevent <ul> and <li> from interfering */
+    list-style: none; /* Remove bullet points */
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
+}
+
+nav li {
+    margin: 0; /* Ensure no extra space is added to list items */
 }
 
 nav a {
