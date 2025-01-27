@@ -46,9 +46,13 @@ nav a {
 
 nav a:hover {
     border-bottom: 0.3em solid var(--color-accent); /* Highlight border on hover */
+    background-color: oklch(from var(--color-accent) 95% 5% h); /* Lighter version */
 }
 
 .current {
     border-bottom: 0.3em solid var(--color-accent); /* Highlight the current page */
+    background-color: oklch(from var(--color-accent) 95% 5% h); /* Lighter background */
     padding-bottom: 0.2em; /* Adjust padding to balance height */
 }
+
+
