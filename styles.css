@@ -69,12 +69,15 @@ input, textarea, button {
 
 /* FOR THE CONTACT PAGE */
 
+/* FOR THE CONTACT PAGE */
+
 form {
     display: grid; /* Enable grid layout */
     grid-template-columns: auto 1fr; /* Two columns: labels (auto) and inputs (1fr) */
     gap: 1em; /* Add spacing between rows */
-    max-width: 600px; /* Optional: Limit the form's width */
+    max-width: 600px; /* Limit the form's width */
     margin: 0 auto; /* Center the form horizontally */
+    padding-left: 1rem; /* Align with the Contact Me heading */
 }
 
 label {
