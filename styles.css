@@ -116,3 +116,64 @@ button {
 .projects h2 {
     margin: 0; /* Remove extra margin around headings */
 }
+
+
+h1 {
+    font-size: 400%; /* Make the main heading significantly larger */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    line-height: 1.1; /* Reduce leading for headings */
+    text-wrap: balance; /* Prevent uneven lines in headings */
+}
+
+
+
+
+
+/* Center and structure the resume content */
+.resume-container {
+    max-width: 800px;
+    margin: 2em auto;
+    padding: 1em;
+    background: #fff; /* White background */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    border-radius: 8px; /* Rounded corners */
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em; /* Add spacing between sections */
+}
+
+/* Styling for section headings */
+.resume-container h3 {
+    font-size: 1.5rem;
+    color: var(--color-accent, #7d3cc9); /* Accent color */
+    border-bottom: 2px solid var(--color-accent); /* Bottom border */
+    padding-bottom: 0.3em; /* Add space below heading */
+    margin-bottom: 0.5em;
+}
+
+/* Resume section text */
+.resume-container p {
+    font-size: 1rem;
+    color: #333; /* Dark text */
+    margin: 0.5em 0;
+    line-height: 1.4; /* Improve readability */
+}
+
+/* Add spacing and alignment for projects */
+.resume-container .projects a {
+    color: var(--color-accent, #7d3cc9);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.resume-container .projects a:hover {
+    text-decoration: underline;
+}
+
+/* Bold project/experience titles */
+.resume-container p strong {
+    font-weight: bold;
+    color: #000;
+}
