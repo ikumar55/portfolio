@@ -56,3 +56,46 @@ nav a:hover {
 }
 
 
+
+/* Make form controls inherit the page's font */
+input, textarea, button {
+    font: inherit; /* Inherit the font styles from the parent element */
+    font-size: 1rem; /* Optional: Ensure consistent font size */
+}
+
+
+
+
+
+/* FOR THE CONTACT PAGE */
+
+form {
+    display: flex;
+    flex-direction: column; /* Lay out items vertically */
+    gap: 1em; /* Add space between form elements */
+    max-width: 400px; /* Optional: Limit the width of the form */
+    margin: 0 auto; /* Center the form horizontally */
+}
+
+label {
+    display: block; /* Make labels behave like block elements */
+    margin-block: 0.5em; /* Add spacing above and below labels */
+}
+
+input, textarea, button {
+    display: block; /* Make form controls behave like block elements */
+    width: 100%; /* Make controls take the full width of the form */
+    box-sizing: border-box; /* Include padding and border in the width */
+}
+
+button {
+    background-color: var(--color-accent); /* Add accent color to the button */
+    color: white; /* White text for contrast */
+    border: none; /* Remove border */
+    padding: 0.5em; /* Add padding */
+    cursor: pointer; /* Change cursor on hover */
+}
+
+button:hover {
+    background-color: oklch(from var(--color-accent) 80% 50%); /* Darken on hover */
+}
