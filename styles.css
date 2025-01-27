@@ -119,14 +119,14 @@ button {
 
 
 h1 {
-    font-size: 400%; /* Make the main heading significantly larger */
+    font-size: 250%; /* Make the main heading significantly larger */
+    margin-bottom: 1em;
 }
 
 h1, h2, h3, h4, h5, h6 {
     line-height: 1.1; /* Reduce leading for headings */
     text-wrap: balance; /* Prevent uneven lines in headings */
 }
-
 
 
 
@@ -176,4 +176,17 @@ h1, h2, h3, h4, h5, h6 {
 .resume-container p strong {
     font-weight: bold;
     color: #000;
+}
+
+
+
+.resume-container .projects {
+    display: flex; /* Arrange projects horizontally */
+    flex-wrap: wrap; /* Wrap to the next line if needed */
+    gap: 1em; /* Add spacing between projects */
+    justify-content: space-between; /* Distribute projects evenly */
+}
+
+.resume-container .projects p {
+    margin: 0; /* Remove excess margin for tighter spacing */
 }
