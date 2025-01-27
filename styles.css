@@ -95,6 +95,3 @@ button {
     cursor: pointer; /* Change cursor on hover */
 }
 
-button:hover {
-    background-color: oklch(from var(--color-accent) 80% 50%); /* Slightly darker hover effect */
-}
