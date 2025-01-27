@@ -70,32 +70,31 @@ input, textarea, button {
 /* FOR THE CONTACT PAGE */
 
 form {
-    display: flex;
-    flex-direction: column; /* Lay out items vertically */
-    gap: 1em; /* Add space between form elements */
-    max-width: 400px; /* Optional: Limit the width of the form */
+    display: grid; /* Enable grid layout */
+    grid-template-columns: auto 1fr; /* Two columns: labels (auto) and inputs (1fr) */
+    gap: 1em; /* Add spacing between rows */
+    max-width: 600px; /* Optional: Limit the form's width */
     margin: 0 auto; /* Center the form horizontally */
 }
 
 label {
-    display: block; /* Make labels behave like block elements */
-    margin-block: 0.5em; /* Add spacing above and below labels */
+    display: contents; /* Flatten the label, so children (text + input) are placed in the grid */
 }
 
-input, textarea, button {
-    display: block; /* Make form controls behave like block elements */
-    width: 100%; /* Make controls take the full width of the form */
-    box-sizing: border-box; /* Include padding and border in the width */
+input, textarea {
+    width: 100%; /* Ensure inputs fill the grid space */
+    box-sizing: border-box; /* Include padding and borders in the width */
 }
 
 button {
-    background-color: var(--color-accent); /* Add accent color to the button */
+    grid-column: 1 / -1; /* Make the button span across all columns */
+    background-color: var(--color-accent); /* Accent color */
     color: white; /* White text for contrast */
     border: none; /* Remove border */
-    padding: 0.5em; /* Add padding */
+    padding: 0.5em 1em; /* Add padding */
     cursor: pointer; /* Change cursor on hover */
 }
 
 button:hover {
-    background-color: oklch(from var(--color-accent) 80% 50%); /* Darken on hover */
+    background-color: oklch(from var(--color-accent) 80% 50%); /* Slightly darker hover effect */
 }
