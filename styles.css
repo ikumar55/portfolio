@@ -95,3 +95,24 @@ button {
     cursor: pointer; /* Change cursor on hover */
 }
 
+
+
+
+
+.projects {
+    display: grid; /* Enable grid layout */
+    grid-template-columns: repeat(auto-fill, minmax(15em, 1fr)); /* Responsive column count */
+    gap: 1em; /* Space between grid items */
+}
+
+
+.projects article {
+    display: grid; /* Enable grid layout within each article */
+    grid-template-rows: subgrid; /* Align content across the subgrid */
+    grid-row: span 3; /* Make each article span 3 rows */
+    gap: 1em; /* Space between elements inside the article */
+}
+
+.projects h2 {
+    margin: 0; /* Remove extra margin around headings */
+}
