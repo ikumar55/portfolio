@@ -72,12 +72,11 @@ input, textarea, button {
 /* FOR THE CONTACT PAGE */
 
 form {
-    display: grid; /* Enable grid layout */
-    grid-template-columns: auto 1fr; /* Two columns: labels (auto) and inputs (1fr) */
-    gap: 1em; /* Add spacing between rows */
-    max-width: 600px; /* Limit the form's width */
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1em;
+    max-width: 600px;
     margin: 0 auto; /* Center the form horizontally */
-    padding-left: 1rem; /* Align with the Contact Me heading */
 }
 
 label {
@@ -184,12 +183,10 @@ h1, h2, h3, h4, h5, h6 {
 
 
 .resume-container .projects {
-    display: flex; /* Arrange projects horizontally */
-    flex-wrap: wrap; /* Wrap to the next line if needed */
-    gap: 1em; /* Add spacing between projects */
-    justify-content: space-between; /* Distribute projects evenly */
+    display: block; /* Stack items vertically */
+    gap: 0.5em; /* Add spacing between projects */
 }
 
 .resume-container .projects p {
-    margin: 0; /* Remove excess margin for tighter spacing */
+    margin-bottom: 0.5em; /* Add some space below each project */
 }
