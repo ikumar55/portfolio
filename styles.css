@@ -72,11 +72,12 @@ input, textarea, button {
 /* FOR THE CONTACT PAGE */
 
 form {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 1em;
-    max-width: 600px;
+    display: flex; /* Use flexbox for alignment */
+    flex-direction: column; /* Stack items vertically */
+    gap: 1em; /* Add spacing between inputs */
+    max-width: 600px; /* Limit form width */
     margin: 0 auto; /* Center the form horizontally */
+    align-items: flex-start; /* Align items to the left */
 }
 
 label {
