@@ -71,14 +71,11 @@ input, textarea, button {
 
 /* FOR THE CONTACT PAGE */
 
-
 form {
     display: grid; /* Use grid layout */
     grid-template-columns: 1fr; /* Single-column layout */
     max-width: 600px; /* Limit the width of the form */
-    margin: 0 auto; /* Center the form */
-    padding: 0; /* Remove padding to align with the header */
-    gap: 1.5rem; /* Add space between form elements */
+    margin: 0; /* Reset the margin */
 }
 
 label {
@@ -88,8 +85,6 @@ label {
 input, textarea {
     width: 100%; /* Ensure inputs fill the grid space */
     box-sizing: border-box; /* Include padding and borders in the width */
-    padding: 0.5rem; /* Add padding inside the input fields */
-    margin-bottom: 1rem; /* Add space below each input/textarea */
 }
 
 button {
