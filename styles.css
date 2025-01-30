@@ -71,20 +71,11 @@ input, textarea, button {
 
 /* FOR THE CONTACT PAGE */
 
-#contact-page h1 {
-    text-align: left; /* Align heading to the left */
-    max-width: 600px; /* Match the form's width */
-    margin: 0 auto 1em; /* Center horizontally and add spacing below */
-    padding-left: 1rem; /* Align with the form */
-}
-
-
 form {
     display: grid; /* Use grid layout */
     grid-template-columns: 1fr; /* Single-column layout */
     max-width: 600px; /* Limit the width of the form */
     margin: 0; /* Reset the margin */
-    padding-left: 1rem; /* Align with "Contact Me" heading */
 }
 
 label {
