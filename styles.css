@@ -16,15 +16,19 @@ body {
 
 html {
     accent-color: var(--color-accent);
+    color-scheme: light dark; /* Enable automatic light/dark mode */
+      
 }
 
 
 nav {
+    --border-color: oklch(50% 10% 200 / 40%); /* Adaptive border color */
     display: flex; /* Use Flexbox for horizontal layout */
     justify-content: space-around; /* Space links evenly */
     align-items: center; /* Center links vertically */
     border-bottom: 1px solid oklch(80% 3% 200); /* Subtle border below the nav */
     margin-bottom: 1em; /* Space below the nav */
+    margin-top: 0.5em;
     padding: 0.5em 0; /* Add some padding around the nav bar */
 }
 
@@ -46,13 +50,19 @@ nav a {
 
 nav a:hover {
     border-bottom: 0.3em solid var(--color-accent); /* Highlight border on hover */
-    background-color: oklch(from var(--color-accent) 95% 5% h); /* Lighter version */
+    background-color: color-mix(in oklch, var(--color-accent), canvas 85%); /* Adaptive hover color */
 }
 
+nav a:hover:not(.current) {
+    border-bottom: 0.3em solid var(--color-accent); /* Highlight border on hover */
+    background-color: color-mix(in oklch, var(--color-accent), canvas 85%); /* Adaptive hover color */
+  }
+
 .current {
-    border-bottom: 0.3em solid var(--color-accent); /* Highlight the current page */
-    background-color: oklch(from var(--color-accent) 95% 5% h); /* Lighter background */
-    padding-bottom: 0.2em; /* Adjust padding to balance height */
+    background-color: color-mix(in oklch, var(--color-accent), canvas 70%); /* Blend accent with canvas */
+    color: canvastext; /* Use system text color */
+    border-radius: 4px; /* Optional: Add rounded corners */
+    padding: 0.3em 0.6em; /* Adjust padding */
 }
 
 
@@ -69,32 +79,56 @@ input, textarea, button {
 
 /* FOR THE CONTACT PAGE */
 
-/* FOR THE CONTACT PAGE */
 
-form {
-    display: grid; /* Use grid layout */
-    grid-template-columns: 1fr; /* Single-column layout */
-    max-width: 600px; /* Limit the width of the form */
-    margin: 0; /* Reset the margin */
+/* Center the form and ensure alignment */
+/* Ensure the form controls inherit the page font */
+input, textarea, button {
+    font: inherit;
+    box-sizing: border-box; /* Include padding and border in width */
 }
 
+/* Form layout */
+form {
+    display: grid;
+    grid-template-columns: auto 1fr; /* Two columns: labels and inputs */
+    gap: 1em; /* Spacing between rows */
+    max-width: 800px; /* Restrict form width */
+    margin: 0 auto; /* Center the form horizontally */
+}
+
+/* Labels and Inputs */
 label {
-    display: contents; /* Flatten the label, so children (text + input) are placed in the grid */
+    display: contents; /* Allow label's children to follow grid */
 }
 
 input, textarea {
-    width: 100%; /* Ensure inputs fill the grid space */
-    box-sizing: border-box; /* Include padding and borders in the width */
+    width: 100%; /* Inputs take up full width of the second column */
+    padding: 0.5em; /* Add padding for better appearance */
+    border: 1px solid #ccc; /* Subtle border */
+    border-radius: 4px; /* Rounded corners */
 }
 
+/* Adjust textarea size */
+textarea {
+    resize: vertical; /* Allow vertical resizing */
+    height: 4em; /* Set initial height */
+}
+
+/* Submit Button */
 button {
-    grid-column: 1 / -1; /* Make the button span across all columns */
-    background-color: var(--color-accent); /* Accent color */
+    grid-column: 1 / -1; /* Span across all columns */
+    padding: 0.8em; /* Add padding */
+    background-color: #f4a2a2; /* Soft color for the button */
     color: white; /* White text for contrast */
     border: none; /* Remove border */
-    padding: 0.5em 1em; /* Add padding */
-    cursor: pointer; /* Change cursor on hover */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
 }
+
+button:hover {
+    background-color: #e08989; /* Slightly darker on hover */
+}
+
 
 
 
@@ -120,7 +154,7 @@ button {
 
 
 h1 {
-    font-size: 250%; /* Make the main heading significantly larger */
+    font-size: 200%; /* Make the main heading significantly larger */
     margin-bottom: 1em;
 }
 
@@ -189,3 +223,151 @@ h1, h2, h3, h4, h5, h6 {
 .resume-container .projects p {
     margin-bottom: 0.5em; /* Add some space below each project */
 }
+
+
+
+
+.color-scheme {
+    position: absolute; /* Take it out of the normal flow */
+    top: 0.5rem; /* 1rem from the top */
+    right: 1rem; /* 1rem from the right */
+    font-size: 65%; /* Reduce font size */
+    font-family: inherit; /* Match the font-family */
+    background-color: var(--background-color, canvas); /* Adaptive background */
+    color: var(--text-color, canvastext); /* Adaptive text color */
+    padding: 0.2em 0.5em; /* Add padding */
+    border: 1px solid var(--border-color, #ccc); /* Subtle border */
+    border-radius: 4px; /* Rounded corners */
+    z-index: 1000; /* Ensure it's above other elements */
+    display: block; /* Ensure the label behaves like a block element */
+}
+
+
+.color-scheme select {
+    font: inherit; /* Match the site's font */
+    background: transparent; /* Blend with background */
+    border: none; /* Remove the default border */
+    color: inherit; /* Match parent color */
+    outline: none; /* Remove focus outline */
+    padding: 0.1em 0.3em; /* Spacing inside dropdown */
+}
+
+
+
+/* For the github stats */
+
+#profile-stats dl {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* Four equal columns */
+    gap: 1rem;
+}
+
+#profile-stats dt {
+    font-weight: bold;
+    grid-row: 1; /* Place dt elements in the first row */
+}
+
+#profile-stats dd {
+    grid-row: 2; /* Place dd elements in the second row */
+    margin: 0;
+}
+
+
+
+.project-year {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 5px;
+}
+
+
+/* For pie chart */
+
+#projects-pie-plot {
+    max-width: 20em;
+    margin-block: 2em;
+    overflow: visible;
+}
+
+.container {
+    display: flex; /* Enable flexbox layout */
+    justify-content: center; /* Center items horizontally */
+    align-items: center; /* Center items vertically */
+    gap: 2em; /* Space between the pie chart and legend */
+}
+
+.legend {
+    display: grid; /* Enable grid layout for legend */
+    grid-template-columns: repeat(auto-fill, minmax(8em, 1fr)); /* Responsive layout */
+    gap: 1em; /* Space between legend items */
+    padding: 1em; /* Add padding */
+    border: 1px solid #ccc; /* Add border for clarity */
+    margin-block: 2em; /* Space above and below */
+    flex: 1; /* Allow the legend to expand in the container */
+    box-sizing: border-box; /* Ensure padding and border are included in width/height */
+}
+
+.legend li {
+    display: flex; /* Flex layout for each legend item */
+    align-items: center; /* Align items vertically */
+    gap: 0.5em; /* Space between swatch and text */
+}
+
+.legend .swatch {
+    display: inline-block; /* Allow size properties to apply */
+    width: 1em; /* Set width */
+    height: 1em; /* Set height */
+    background-color: var(--color); /* Apply color from CSS variable */
+    border-radius: 50%; /* Make swatch circular */
+    border: 1px solid #000; /* Optional border for visibility */
+}
+  
+/* Style each legend item */
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+  
+  /* Style the color swatch */
+.swatch {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+    background-color: var(--color);
+  }
+  
+
+
+  .searchBar {
+    width: 100%; /* Adjust as needed (e.g., 100% or a fixed width like 500px) */
+    margin: 1em auto; /* Center the search bar with some spacing */
+    padding: 0.5em; /* Add padding for better aesthetics */
+    font-size: 1rem; /* Adjust the font size */
+    border: 1px solid #ccc; /* Add a subtle border */
+    border-radius: 0.25em; /* Add rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow for a modern look */
+}
+
+
+
+
+/* Smooth transition for wedges */
+path {
+    transition: opacity 300ms;
+  }
+  
+  /* Highlight hover effect */
+  svg:has(path:hover) path:not(:hover) {
+    opacity: 0.5;
+  }
+
+
+  .selected {
+    --color: oklch(60% 45% 0) !important; /* Highlight color */
+  
+    &:is(path) {
+      fill: var(--color);
+    }
+  }
