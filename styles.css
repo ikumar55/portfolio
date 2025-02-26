@@ -468,4 +468,11 @@ dl.info {
     opacity: 0;
     visibility: hidden;
   }
+
+  
+
+
+  circle.selected {
+    fill: #ff6b6b;
+  }
   

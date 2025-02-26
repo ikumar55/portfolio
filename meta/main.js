@@ -5,6 +5,11 @@ const height = 600;
 let data = [];
 let commits = [];
 
+// Global scales to be used by the brush functions
+let xScale, yScale;
+// Global brush selection variable
+let brushSelection = null;
+
 /**
  * 1) Load the CSV into 'data' and parse numeric/date fields.
  *    After loading, call displayStats().
@@ -68,35 +73,28 @@ function displayStats() {
   // Convert line-level data -> commit-level data
   processCommits();
 
-  // Create the <dl> in #stats
   const dl = d3.select('#stats')
     .append('dl')
     .attr('class', 'stats');
 
-  // 1) COMMITS
   dl.append('dt').text('COMMITS');
   dl.append('dd').text(commits.length);
 
-  // 2) FILES
   const distinctFiles = d3.groups(data, (d) => d.file).length;
   dl.append('dt').text('FILES');
   dl.append('dd').text(distinctFiles);
 
-  // 3) TOTAL LOC
   dl.append('dt').html('TOTAL <abbr title="Lines of Code">LOC</abbr>');
   dl.append('dd').text(data.length);
 
-  // 4) MAX DEPTH
   const maxDepth = d3.max(data, (d) => d.depth);
   dl.append('dt').text('MAX DEPTH');
   dl.append('dd').text(maxDepth);
 
-  // 5) LONGEST LINE (max line length in characters)
   const maxLineLength = d3.max(data, (d) => d.length);
   dl.append('dt').text('LONGEST LINE');
   dl.append('dd').text(maxLineLength);
 
-  // 6) MAX LINES (highest line number in the codebase)
   const maxLineNumber = d3.max(data, (d) => d.line);
   dl.append('dt').text('MAX LINES');
   dl.append('dd').text(maxLineNumber);
@@ -115,7 +113,6 @@ function updateTooltipContent(commit) {
   const date = document.getElementById('commit-date');
   const linesChanged = document.getElementById('commit-lines-changed');
 
-  // If the commit object is empty, clear the tooltip
   if (!commit || Object.keys(commit).length === 0) {
     link.href = '';
     link.textContent = '';
@@ -124,16 +121,9 @@ function updateTooltipContent(commit) {
     return;
   }
 
-  // Set commit link + ID
   link.href = commit.url;
   link.textContent = commit.id;
-
-  // Set commit date
-  date.textContent = commit.datetime.toLocaleString('en', {
-    dateStyle: 'full'
-  });
-
-  // Set total lines changed (the circle size)
+  date.textContent = commit.datetime.toLocaleString('en', { dateStyle: 'full' });
   linesChanged.textContent = commit.totalLines;
 }
 
@@ -149,7 +139,77 @@ function updateTooltipPosition(event) {
 }
 
 // -------------------
-// Scatterplot
+// Brushing functions
+// -------------------
+
+// Returns true if the commit's x and y positions are within the brush selection
+function isCommitSelected(commit) {
+  if (!brushSelection) return false;
+
+  const [[x0, y0], [x1, y1]] = brushSelection;
+  const cx = xScale(commit.datetime);
+  const cy = yScale(commit.hourFrac);
+  return cx >= x0 && cx <= x1 && cy >= y0 && cy <= y1;
+}
+
+// Update the visual state of dots based on brush selection
+function updateSelection() {
+  d3.selectAll('circle').classed('selected', (d) => isCommitSelected(d));
+}
+
+// Update the selection count display
+function updateSelectionCount() {
+  const selectedCommits = brushSelection
+    ? commits.filter(isCommitSelected)
+    : [];
+  const countElement = document.getElementById('selection-count');
+  countElement.textContent = `${selectedCommits.length || 'No'} commits selected`;
+  return selectedCommits;
+}
+
+// Update language breakdown for selected commits
+function updateLanguageBreakdown() {
+  const selectedCommits = brushSelection
+    ? commits.filter(isCommitSelected)
+    : [];
+  const container = document.getElementById('language-breakdown');
+
+  if (selectedCommits.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+  // If no commits are selected, you might decide to use all commits instead:
+  const requiredCommits = selectedCommits.length ? selectedCommits : commits;
+  const lines = requiredCommits.flatMap((d) => d.lines);
+
+  const breakdown = d3.rollup(
+    lines,
+    (v) => v.length,
+    (d) => d.type
+  );
+
+  container.innerHTML = '';
+  for (const [language, count] of breakdown) {
+    const proportion = count / lines.length;
+    const formatted = d3.format('.1~%')(proportion);
+    container.innerHTML += `
+      <dt>${language}</dt>
+      <dd>${count} lines (${formatted})</dd>
+    `;
+  }
+  return breakdown;
+}
+
+// Brush event handler
+function brushed(event) {
+  brushSelection = event.selection;
+  updateSelection();
+  updateSelectionCount();
+  updateLanguageBreakdown();
+}
+
+// -------------------
+// Scatterplot and Brush
 // -------------------
 function createScatterPlot() {
   // 1) Select the container and append an SVG
@@ -169,14 +229,14 @@ function createScatterPlot() {
     height: height - margin.top - margin.bottom,
   };
 
-  // 2) Define scales
-  const xScale = d3
+  // 2) Define scales (assign them to global variables so brush functions can use them)
+  xScale = d3
     .scaleTime()
     .domain(d3.extent(commits, (d) => d.datetime))
     .range([usableArea.left, usableArea.right])
     .nice();
 
-  const yScale = d3
+  yScale = d3
     .scaleLinear()
     .domain([0, 24])
     .range([usableArea.bottom, usableArea.top]);
@@ -214,16 +274,16 @@ function createScatterPlot() {
   // 7) Prepare a <g> for our circles
   const dots = svg.append('g').attr('class', 'dots');
 
-  // 8) Create a radius scale so that circle area ~ lines edited
+  // 8) Create a radius scale (circle area ~ totalLines)
   const [minLines, maxLines] = d3.extent(commits, (d) => d.totalLines);
   const rScale = d3.scaleSqrt()
     .domain([minLines, maxLines])
-    .range([2, 30]); // tweak as needed
+    .range([2, 30]);
 
-  // 9) Sort commits so bigger circles are drawn first
+  // 9) Sort commits so larger circles are drawn first (so smaller ones appear on top)
   const sortedCommits = d3.sort(commits, (d) => -d.totalLines);
 
-  // 10) Draw circles using sortedCommits
+  // 10) Draw circles using sortedCommits with tooltip integration
   dots
     .selectAll('circle')
     .data(sortedCommits)
@@ -234,24 +294,24 @@ function createScatterPlot() {
     .attr('fill', 'steelblue')
     .style('fill-opacity', 0.7)
     .on('mouseenter', function (event, d) {
-      // Highlight the hovered circle
       d3.select(this).style('fill-opacity', 1);
-
-      // Tooltip logic
       updateTooltipContent(d);
       updateTooltipVisibility(true);
       updateTooltipPosition(event);
     })
     .on('mousemove', function (event) {
-      // Move the tooltip with the mouse
       updateTooltipPosition(event);
     })
     .on('mouseleave', function () {
-      // Restore opacity
       d3.select(this).style('fill-opacity', 0.7);
-
-      // Clear tooltip
       updateTooltipContent({});
       updateTooltipVisibility(false);
     });
+
+  // 11) Initialize the brush
+  const brush = d3.brush()
+    .on('start brush end', brushed);
+  d3.select(svg.node()).call(brush);
+  // Raise the dots (and any elements after the overlay) so that tooltips still work
+  d3.select(svg.node()).selectAll('.dots, .overlay ~ *').raise();
 }
