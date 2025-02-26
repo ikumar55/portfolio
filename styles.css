@@ -371,3 +371,101 @@ path {
       fill: var(--color);
     }
   }
+
+
+
+
+
+
+/* 
+   .stats: A definition list styled as a horizontal stats bar.
+   Adjust columns, gap, colors, fonts, etc. as you like.
+*/
+.stats {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: auto auto;
+    grid-auto-flow: column;
+  
+    column-gap: 2rem;
+    row-gap: 0.25rem;
+
+  
+    /* Remove the auto horizontal centering */
+    /* margin: 2rem auto; */
+    margin: 2rem 0;  /* only top/bottom margin now */
+  
+    /* Optionally remove or adjust max-width */
+    /* max-width: 800px; */
+    padding: 0;
+  }
+  
+
+  /* Keep dt and dd margin at 0 for finer control */
+  .stats dt,
+  .stats dd {
+    margin: 0;
+  }
+  
+  /* If you still want a bit of spacing under dt, do something small */
+  .stats dt {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #666;
+    text-transform: uppercase;
+    /* margin-bottom: 0.25rem; */ /* You can reduce or remove this if you like */
+  }
+  
+  .stats dd {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #333;
+  }
+
+
+  .grid line {
+    stroke: #ccc;
+    stroke-opacity: 0.5;
+    shape-rendering: crispEdges; /* optional for sharper lines */
+  }
+
+
+
+
+  /* Styling for info blocks */
+dl.info {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5em;
+    margin: 0;
+    padding: 0.5em;
+    background-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    border-radius: 4px;
+    position: fixed;
+    top: 1em;
+    left: 1em;
+    transition: opacity 500ms, visibility 500ms;
+  }
+  
+  /* Additional tooltip-specific styles */
+  .tooltip {
+    z-index: 10;
+  }
+  
+  /* Circle hover styles */
+  circle {
+    transition: transform 200ms;
+    transform-origin: center;
+    transform-box: fill-box;
+  }
+  circle:hover {
+    transform: scale(1.5);
+  }
+  
+  /* Hide tooltip when appropriate */
+  dl.info[hidden]:not(:hover, :focus-within) {
+    opacity: 0;
+    visibility: hidden;
+  }
+  

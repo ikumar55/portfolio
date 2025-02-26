@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Meta Analysis</title>
+
+  <!-- Link your main CSS file -->
+  <link rel="stylesheet" href="../styles.css">
+
+  <!-- Include D3 -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+
+  <!-- Include global.js so it can inject the nav -->
+  <script src="../global.js" type="module"></script>
+
+  <!-- Include your meta-specific main.js -->
+  <script src="main.js" defer></script>
+</head>
+<body>
+  <!-- The nav bar will be injected at the top by global.js -->
+  <h1>Meta Analysis</h1>
+
+  <div id="stats"></div>
+
+  
+  <h2>Commits by time of day</h2>
+  <div id="chart"></div>
+
+
+
+  <dl id="commit-tooltip" class="info tooltip" hidden>
+    <dt>Commit</dt>
+    <dd>
+      <a href="" id="commit-link" target="_blank"></a>
+    </dd>
+  
+    <dt>Date</dt>
+    <dd id="commit-date"></dd>
+    
+    <dt>Lines changed</dt>
+    <dd id="commit-lines-changed"></dd>
+  </dl>
+
+
+</body>
+</html>

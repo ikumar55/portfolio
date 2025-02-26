@@ -2,7 +2,7 @@
 // function $$(selector, context = document) {
 //     return Array.from(context.querySelectorAll(selector));
 //   }
-  
+
 //   // Get all navigation links
 //   const navLinks = $$("nav a");
   
@@ -20,6 +20,7 @@ let pages = [
     { url: 'projects/', title: 'Projects' },
     { url: 'contact/', title: 'Contact' },
     { url: 'resume/', title: 'Resume' },
+    { url: 'meta/', title: 'Meta' },
     { url: 'https://github.com/ikumar55', title: 'Github' }
   ];
   
