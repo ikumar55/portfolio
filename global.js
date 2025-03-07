@@ -101,16 +101,30 @@ export async function fetchJSON(url) {
 
 export function renderProjects(projects, containerElement, headingLevel = 'h2') {
   containerElement.innerHTML = '';
+
   projects.forEach(project => {
+      // Optional: create a link snippet if 'link' is provided
+      let linkHTML = '';
+      if (project.link) {
+        linkHTML = `
+          <p>
+            <a class="project-link" href="${project.link}" target="_blank" rel="noopener noreferrer">
+              View Project
+            </a>
+          </p>
+        `;
+      }
+
       const article = document.createElement('article');
       article.innerHTML = `
-          <${headingLevel}>${project.title || 'Untitled Project'}</${headingLevel}>
-          <img src="${project.image || 'default-image.png'}" alt="${project.title || 'Project Image'}">
-          <div>
-              <p>${project.description || 'No description available.'}</p>
-              <p class="project-year">Year: ${project.year || 'Unknown'}</p>
-          </div>
-      `;
+    <${headingLevel}>${project.title || 'Untitled Project'}</${headingLevel}>
+    <img src="${project.image || 'default-image.png'}" alt="${project.title || 'Project Image'}">
+    <div>
+        <p>${project.description || 'No description available.'}</p>
+        ${linkHTML}
+        <p class="project-year">Year: ${project.year || 'Unknown'}</p>
+    </div>
+    `;
       containerElement.appendChild(article);
   });
 }

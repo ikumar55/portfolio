@@ -476,3 +476,36 @@ dl.info {
     fill: #ff6b6b;
   }
   
+
+
+
+/* Constrain the size of all images inside .projects */
+.projects img {
+    display: block;
+    /* Remove margin auto if you had it */
+    margin: 0; 
+    max-width: 250px;
+    height: auto;
+    /* If your container has text-align: center, override it here: */
+    text-align: left;
+  }
+
+
+
+
+
+
+  .project-link {
+    display: inline-block; 
+    padding: 0.5rem 1rem;
+    margin-top: 0.5rem;
+    background-color: #333;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+  }
+  
+  .project-link:hover {
+    background-color: #555;
+  }
