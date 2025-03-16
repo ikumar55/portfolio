@@ -8,7 +8,7 @@
     {
         "title": "CycleScope: Visualizing Cyclist Traffic Flows",
         "year": "2025",
-        "image": "/images/cyclescope.png",
+        "image": "images/cyclescope.png",
         "description": "Explore Boston and Cambridge’s bike network with real-time station data, dynamic traffic flows, and time-based filtering—revealing when and where cyclists are on the move, implemented with D3.js",
         "link": "https://ikumar55.github.io/CycleScope/"
     },
