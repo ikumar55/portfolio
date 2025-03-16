@@ -452,29 +452,35 @@ dl.info {
   .tooltip {
     z-index: 10;
   }
-  
-  /* Circle hover styles */
+
+
+  /* Circle styles with entry transition for radius */
   circle {
-    transition: transform 200ms;
+    @starting-style {
+      r: 0;
+    }
+    transition: transform 200ms, r calc(var(--r) * 50ms);
     transform-origin: center;
     transform-box: fill-box;
   }
-  circle:hover {
-    transform: scale(1.5);
-  }
   
-  /* Hide tooltip when appropriate */
-  dl.info[hidden]:not(:hover, :focus-within) {
-    opacity: 0;
-    visibility: hidden;
-  }
-
   
 
+circle:hover {
+  transform: scale(1.5);
+}
 
-  circle.selected {
-    fill: #ff6b6b;
-  }
+/* Hide tooltip when appropriate */
+dl.info[hidden]:not(:hover, :focus-within) {
+  opacity: 0;
+  visibility: hidden;
+}
+
+
+circle.selected {
+  fill: #ff6b6b;
+}
+
   
 
 
@@ -509,3 +515,7 @@ dl.info {
   .project-link:hover {
     background-color: #555;
   }
+
+
+
+

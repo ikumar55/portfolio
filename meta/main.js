@@ -2,13 +2,26 @@
 const width = 1000;
 const height = 600;
 
+let svg;
+
 let data = [];
 let commits = [];
+let selectedCommits = [];
+
+let filteredCommits = [];
+
 
 // Global scales to be used by the brush functions
 let xScale, yScale;
 // Global brush selection variable
 let brushSelection = null;
+
+
+let commitProgress = 100; // 0..100
+let timeScale;  
+
+
+
 
 /**
  * 1) Load the CSV into 'data' and parse numeric/date fields.
@@ -24,15 +37,25 @@ async function loadData() {
     datetime: new Date(row.datetime),
   }));
 
-  // Now that 'data' is ready, display the stats
   displayStats();
-
-  // processCommits => populates the global 'commits' array
   processCommits();
 
-  // Now that commits is populated, create the scatterplot
-  createScatterPlot();
+  // Define your timeScale etc.
+  timeScale = d3.scaleTime()
+    .domain(d3.extent(commits, d => d.datetime))
+    .range([0, 100]);
+
+  // Initialize the SVG only once
+  initializeChart();
+
+  // Draw initial scatter plot with all commits
+  updateScatterPlot(commits);
+
+  // Set up the slider UI
+  setupSlider();
 }
+
+
 
 /**
  * 2) Convert line-level data into commit-level data.
@@ -143,35 +166,28 @@ function updateTooltipPosition(event) {
 // -------------------
 
 // Returns true if the commit's x and y positions are within the brush selection
+// 3) isCommitSelected() just checks the array
 function isCommitSelected(commit) {
-  if (!brushSelection) return false;
-
-  const [[x0, y0], [x1, y1]] = brushSelection;
-  const cx = xScale(commit.datetime);
-  const cy = yScale(commit.hourFrac);
-  return cx >= x0 && cx <= x1 && cy >= y0 && cy <= y1;
+  return selectedCommits.includes(commit);
 }
 
 // Update the visual state of dots based on brush selection
 function updateSelection() {
-  d3.selectAll('circle').classed('selected', (d) => isCommitSelected(d));
+  d3.selectAll('circle')
+    .classed('selected', d => isCommitSelected(d));
 }
 
 // Update the selection count display
 function updateSelectionCount() {
-  const selectedCommits = brushSelection
-    ? commits.filter(isCommitSelected)
-    : [];
   const countElement = document.getElementById('selection-count');
-  countElement.textContent = `${selectedCommits.length || 'No'} commits selected`;
-  return selectedCommits;
+  countElement.textContent = selectedCommits.length
+    ? `${selectedCommits.length} commits selected`
+    : 'No commits selected';
 }
 
 // Update language breakdown for selected commits
 function updateLanguageBreakdown() {
-  const selectedCommits = brushSelection
-    ? commits.filter(isCommitSelected)
-    : [];
+
   const container = document.getElementById('language-breakdown');
 
   if (selectedCommits.length === 0) {
@@ -200,9 +216,19 @@ function updateLanguageBreakdown() {
   return breakdown;
 }
 
-// Brush event handler
-function brushed(event) {
-  brushSelection = event.selection;
+// 2) brushed function updates selectedCommits instead of brushSelection
+function brushed(evt) {
+  const selection = evt.selection;
+  selectedCommits = !selection
+    ? []
+    : commits.filter(commit => {
+        let [[x0, y0], [x1, y1]] = selection;
+        let cx = xScale(commit.datetime);
+        let cy = yScale(commit.hourFrac);
+        return cx >= x0 && cx <= x1 && cy >= y0 && cy <= y1;
+      });
+  
+  // After updating selectedCommits, call any “update” functions:
   updateSelection();
   updateSelectionCount();
   updateLanguageBreakdown();
@@ -211,14 +237,8 @@ function brushed(event) {
 // -------------------
 // Scatterplot and Brush
 // -------------------
-function createScatterPlot() {
-  // 1) Select the container and append an SVG
-  const svg = d3
-    .select('#chart')
-    .append('svg')
-    .attr('viewBox', `0 0 ${width} ${height}`)
-    .style('overflow', 'visible');
-
+function updateScatterPlot(data) {
+  // Define margins and usable area again (if needed)
   const margin = { top: 10, right: 10, bottom: 30, left: 20 };
   const usableArea = {
     top: margin.top,
@@ -229,89 +249,188 @@ function createScatterPlot() {
     height: height - margin.top - margin.bottom,
   };
 
-  // 2) Define scales (assign them to global variables so brush functions can use them)
-  xScale = d3
-    .scaleTime()
-    .domain(d3.extent(commits, (d) => d.datetime))
+  // Update scales
+  xScale = d3.scaleTime()
+    .domain(d3.extent(data, d => d.datetime))
     .range([usableArea.left, usableArea.right])
     .nice();
 
-  yScale = d3
-    .scaleLinear()
+  yScale = d3.scaleLinear()
     .domain([0, 24])
     .range([usableArea.bottom, usableArea.top]);
 
-  // 3) Define axes
   const xAxis = d3.axisBottom(xScale);
-  const yAxis = d3
-    .axisLeft(yScale)
-    .tickFormat((d) => String(d % 24).padStart(2, '0') + ':00');
+  const yAxis = d3.axisLeft(yScale)
+    .tickFormat(d => String(d % 24).padStart(2, '0') + ':00');
 
-  // 4) Add horizontal grid lines (drawn behind dots)
-  svg
-    .append('g')
-    .attr('class', 'grid')
-    .attr('transform', `translate(${usableArea.left}, 0)`)
-    .call(
-      d3.axisLeft(yScale)
-        .tickSize(-usableArea.width)
-        .tickFormat('')
-    )
-    .call((g) => g.select('.domain').remove());
-
-  // 5) Add the Y axis
-  svg
-    .append('g')
-    .attr('transform', `translate(${usableArea.left}, 0)`)
-    .call(yAxis);
-
-  // 6) Add the X axis
-  svg
-    .append('g')
-    .attr('transform', `translate(0, ${usableArea.bottom})`)
+  // Update axes
+  svg.select('.x-axis')
+    .transition().duration(300)
     .call(xAxis);
 
-  // 7) Prepare a <g> for our circles
-  const dots = svg.append('g').attr('class', 'dots');
+  svg.select('.y-axis')
+    .transition().duration(300)
+    .call(yAxis);
 
-  // 8) Create a radius scale (circle area ~ totalLines)
-  const [minLines, maxLines] = d3.extent(commits, (d) => d.totalLines);
+  // Create a radius scale based on the filtered data
+  const [minLines, maxLines] = d3.extent(data, d => d.totalLines);
   const rScale = d3.scaleSqrt()
-    .domain([minLines, maxLines])
+    .domain([minLines || 0, maxLines || 0])
     .range([2, 30]);
 
-  // 9) Sort commits so larger circles are drawn first (so smaller ones appear on top)
-  const sortedCommits = d3.sort(commits, (d) => -d.totalLines);
+  // Sort data so bigger circles are drawn first
+  const sortedData = d3.sort(data, d => -d.totalLines);
 
-  // 10) Draw circles using sortedCommits with tooltip integration
-  dots
-    .selectAll('circle')
-    .data(sortedCommits)
-    .join('circle')
-    .attr('cx', (d) => xScale(d.datetime))
-    .attr('cy', (d) => yScale(d.hourFrac))
-    .attr('r', (d) => rScale(d.totalLines))
+  // Join data with a key function on the existing dots group
+  const dots = svg.select('.dots');
+  const circles = dots.selectAll('circle')
+    .data(sortedData, d => d.id);
+
+  // EXIT: Remove circles that are no longer needed
+  circles.exit().remove();
+
+  // UPDATE: Update attributes for existing circles
+  circles
+    .transition()
+    .duration(300)
+    .attr('cx', d => xScale(d.datetime))
+    .attr('cy', d => yScale(d.hourFrac))
+    .attr('r', d => rScale(d.totalLines))
+    .style('--r', d => rScale(d.totalLines));
+
+  // ENTER: Append new circles for new data points
+  const circlesEnter = circles.enter()
+    .append('circle')
+    .attr('cx', d => xScale(d.datetime))
+    .attr('cy', d => yScale(d.hourFrac))
+    // Start new circles with r = 0 so they animate in
+    .attr('r', 0)
+    .style('--r', d => rScale(d.totalLines))
     .attr('fill', 'steelblue')
     .style('fill-opacity', 0.7)
-    .on('mouseenter', function (event, d) {
-      d3.select(this).style('fill-opacity', 1);
+    .on('mouseenter', function(event, d) {
+      d3.select(this)
+        .classed('selected', isCommitSelected(d))
+        .style('fill-opacity', 1);
       updateTooltipContent(d);
       updateTooltipVisibility(true);
       updateTooltipPosition(event);
     })
-    .on('mousemove', function (event) {
+    .on('mousemove', event => {
       updateTooltipPosition(event);
     })
-    .on('mouseleave', function () {
-      d3.select(this).style('fill-opacity', 0.7);
+    .on('mouseleave', function(event, d) {
+      d3.select(this)
+        .classed('selected', isCommitSelected(d))
+        .style('fill-opacity', 0.7);
       updateTooltipContent({});
       updateTooltipVisibility(false);
     });
 
-  // 11) Initialize the brush
-  const brush = d3.brush()
-    .on('start brush end', brushed);
-  d3.select(svg.node()).call(brush);
-  // Raise the dots (and any elements after the overlay) so that tooltips still work
-  d3.select(svg.node()).selectAll('.dots, .overlay ~ *').raise();
+  // Transition new circles to their intended size
+  circlesEnter.transition()
+    .duration(300)
+    .attr('r', d => rScale(d.totalLines));
 }
+
+
+
+
+
+function initializeChart() {
+  const margin = { top: 10, right: 10, bottom: 30, left: 20 };
+  const usableArea = {
+    top: margin.top,
+    right: width - margin.right,
+    bottom: height - margin.bottom,
+    left: margin.left,
+    width: width - margin.left - margin.right,
+    height: height - margin.top - margin.bottom,
+  };
+
+  svg = d3.select('#chart')
+    .append('svg')
+    .attr('viewBox', `0 0 ${width} ${height}`)
+    .style('overflow', 'visible');
+
+  // Add grid lines (if these are static)
+  svg.append('g')
+    .attr('class', 'grid')
+    .attr('transform', `translate(${usableArea.left}, 0)`)
+    .call(
+      d3.axisLeft(d3.scaleLinear().range([usableArea.bottom, usableArea.top]))
+        .tickSize(-usableArea.width)
+        .tickFormat('')
+    )
+    .call(g => g.select('.domain').remove());
+
+  // Create axes groups that we can update later
+  svg.append('g')
+    .attr('class', 'x-axis')
+    .attr('transform', `translate(0, ${usableArea.bottom})`);
+
+  svg.append('g')
+    .attr('class', 'y-axis')
+    .attr('transform', `translate(${usableArea.left}, 0)`);
+
+  // Create the dots group for circles
+  svg.append('g')
+    .attr('class', 'dots');
+}
+
+
+
+
+
+
+
+
+
+
+
+function setupSlider() {
+  const slider = document.getElementById('commitProgressSlider');
+  const selectedTimeElem = document.getElementById('selectedTime');
+  
+  // Show initial date/time for commitProgress = 100
+  updateSelectedTimeDisplay();
+
+  // Listen for changes to the slider
+  slider.addEventListener('input', () => {
+    commitProgress = +slider.value;
+    updateSelectedTimeDisplay();
+  });
+
+  function updateSelectedTimeDisplay() {
+    const commitMaxTime = timeScale.invert(commitProgress);
+    selectedTimeElem.textContent = commitMaxTime.toLocaleString('en', {
+      dateStyle: 'long',
+      timeStyle: 'short'
+    });
+  
+    // Filter and update the scatter plot
+    filterCommitsByTime();          // sets filteredCommits
+    updateScatterPlot(filteredCommits); // draws only those commits
+  }
+  
+}
+
+
+
+function filterCommitsByTime() {
+  // Convert commitProgress (0..100) to a Date
+  const commitMaxTime = timeScale.invert(commitProgress);
+
+  // Filter commits whose datetime is <= commitMaxTime
+  filteredCommits = commits.filter(d => d.datetime <= commitMaxTime);
+}
+
+
+
+let lines = filteredCommits.flatMap((d) => d.lines);
+let files = [];
+files = d3
+  .groups(lines, (d) => d.file)
+  .map(([name, lines]) => {
+    return { name, lines };
+  });
