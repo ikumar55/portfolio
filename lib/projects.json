@@ -13,10 +13,11 @@
         "link": "https://ikumar55.github.io/CycleScope/"
     },
     {
-        "title": "Machine Learning Model",
-        "year": "2023",
+        "title": "Visualizing MacroNutrients on Glucose Spikes",
+        "year": "2025",
         "image": "https://example.com/images/project3.png",
-        "description": "A predictive model built using Python and Scikit-Learn."
+        "description": "Our project team addressed the issue of diabetic awareness, aimed at educating which factors contribute to diabetes. Scroll along as we demonstrate surprising findings from the CGMacros Dataset, a 10-day collection of health data from over 40 participants.",
+        "link": "https://neildandekar.me/cgmacros-scrolly/"
     },
     {
         "title": "Weather App",
